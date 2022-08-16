@@ -1,6 +1,6 @@
 const fs = require('fs');
 
-function transferObjet(source, des) {
+function transferObject(source, des) {
    const obj = {};
    Object.keys(source).forEach(key => {
       if (des[key] !== undefined) {
@@ -20,25 +20,22 @@ function transferArrayObject(source, des) {
    return res;
 }
 
-const a = [
-   {
-      a: 1,
-      b: 2,
-      c: 3,
-   },
-];
-const b = {
-   a: 1,
-   b: 2,
-};
+function readJsonFromFile(path) {
+   const rawData = fs.readFileSync(path);
+   const json = JSON.parse(rawData);
+   return json;
+}
 
-const c = transferArrayObject(a, b);
+function exportJsonToFile(data, fileName) {
+   fs.writeFile(fileName, JSON.stringify(data), function (err) {
+      if (err) throw err;
+      console.log('complete');
+   });
+}
 
-const JSONString = JSON.stringify(c);
+const des = readJsonFromFile('./des.json');
+const source = readJsonFromFile('./source.json');
 
-console.log(c);
+const transferResult = transferArrayObject(source, des);
 
-fs.writeFile('output.json', JSONString, function (err) {
-   if (err) throw err;
-   console.log('complete');
-});
+exportJsonToFile(transferResult, 'result.json');
